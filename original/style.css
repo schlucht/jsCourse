@@ -46,3 +46,12 @@ figure .image img {
   height: 50px;
   margin-right: 10px;
 }
+#target {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin: 1.2rem;
+}
+.movie {
+  margin: 1.2rem;
+}
