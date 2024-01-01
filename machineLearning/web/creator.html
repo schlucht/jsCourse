@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <title>Data Crator</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, maximum-scale=0.9, user-scalable=0">
+    <link href="style.css" rel="stylesheet">
+  </head>
+  <body>
+    <div id="content">
+      <h1>Data Crator</h1>
+      <div>
+        <input id="student" type="text" placeholder="Dein Name">
+        <span id='instructions'></span>
+        <button id="btnAdvence" onclick="start()">Start</button>
+      </div>
+      <br>
+      <div id="sketchPadContainer"
+      style="visibility:hidden"></div>
+    </div>
+    <script src="js/draw.js"></script>
+    <script src="js/sketchPad.js"></script>
+    <script>
+    let index = 0;
+    const labels = ['Auto', 'Fisch', 'Haus', 'Baum', 'Velo', 'Gitarre', 'Schreiber', 'Glocke'];
+    const data = {
+      student: null,
+      session: new Date().getTime(),
+      drawings:{},
+    }
+    const sketchPad = 
+      new SketchPad(sketchPadContainer);
+
+    function start() {
+      if (student.value === ''){
+        alert('Bitte zuerst den Namen schreiben!');
+        return;
+      }
+      data.student= student.value;
+      student.style.display='none';
+      sketchPadContainer.style.visibility="visible";
+      const label = labels[index];
+      instructions.innerHTML="Bitte zeichne dies: " +label;
+      btnAdvence.innerHTML='Nächste';
+      btnAdvence.onclick=next;
+    }
+    function next(){
+      if(sketchPad.paths.length===0){
+        alert('Zeichne zuerst das Bild!');
+        return;
+      }
+      const label = labels[index];
+      data.drawings[label] = sketchPad.paths;
+      sketchPad.reset();
+      index++;
+      if (index < labels.length) {
+        const nextLabel = labels[index];
+        instructions.innerHTML="Bitte zeichne dies: " +nextLabel;
+      } else {
+        sketchPadContainer.style.visibility='hidden';
+        instructions.innerHTML='Danke fürs Zeichnen';
+        btnAdvence.innerHTML = 'Speichern';
+        btnAdvence.onclick = save;
+      }
+    }
+    function save() {
+      
+      btnAdvence.style.display='none';
+      instructions.innerHTML = 'Take your downloded file...';
+
+      const element = document.createElement('a');
+      element.setAttribute('href',
+      'data:text/plain;charset=utf-8,' + encodeURIComponent(JSON.stringify(data))
+      );
+
+      const fileName = data.session + ".json";
+     element.setAttribute('download', fileName);
+
+      element.style.display = 'none';
+      document.body.appendChild(element);
+      element.click();
+      document.body.removeChild(element);
+    }
+    </script>
+  </body>
+</html>
+
